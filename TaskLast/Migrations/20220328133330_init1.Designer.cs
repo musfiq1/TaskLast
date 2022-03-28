@@ -10,8 +10,8 @@ using TaskLast.Data;
 namespace TaskLast.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220328101138_init")]
-    partial class init
+    [Migration("20220328133330_init1")]
+    partial class init1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -248,8 +248,8 @@ namespace TaskLast.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<bool>("IsDone")
                         .HasColumnType("bit");
@@ -278,13 +278,18 @@ namespace TaskLast.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("FirstTableId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDone")
                         .HasColumnType("bit");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("FirstTableId");
 
                     b.ToTable("SecondTables");
                 });
@@ -347,6 +352,17 @@ namespace TaskLast.Migrations
                         .HasForeignKey("CustomUserId");
 
                     b.Navigation("CustomUser");
+                });
+
+            modelBuilder.Entity("TaskLast.Models.SecondTable", b =>
+                {
+                    b.HasOne("TaskLast.Models.FirstTable", "FirstTable")
+                        .WithMany()
+                        .HasForeignKey("FirstTableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FirstTable");
                 });
 
             modelBuilder.Entity("TaskLast.Models.CustomUser", b =>

@@ -50,21 +50,6 @@ namespace TaskLast.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SecondTables",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    IsDone = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SecondTables", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -177,7 +162,7 @@ namespace TaskLast.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeadlineDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CustomUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
@@ -192,6 +177,28 @@ namespace TaskLast.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SecondTables",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    FirstTableId = table.Column<int>(type: "int", nullable: false),
+                    IsDone = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SecondTables", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_SecondTables_FirstTables_FirstTableId",
+                        column: x => x.FirstTableId,
+                        principalTable: "FirstTables",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -237,6 +244,11 @@ namespace TaskLast.Migrations
                 name: "IX_FirstTables_CustomUserId",
                 table: "FirstTables",
                 column: "CustomUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SecondTables_FirstTableId",
+                table: "SecondTables",
+                column: "FirstTableId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -257,13 +269,13 @@ namespace TaskLast.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "FirstTables");
-
-            migrationBuilder.DropTable(
                 name: "SecondTables");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "FirstTables");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

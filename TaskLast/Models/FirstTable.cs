@@ -13,7 +13,7 @@ namespace TaskLast.Models
         public int ID { get; set; }
         [MaxLength(30), Required]
         public string Name { get; set; }
-        [MaxLength(30), Required]
+        [MaxLength(300), Required]
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime DeadlineDate { get; set; }
